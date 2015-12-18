@@ -1,0 +1,2 @@
+分布式session，支持使用 redis, memcached 和 cookie
+Distributed session, support the use of redis, memcached and cookie
