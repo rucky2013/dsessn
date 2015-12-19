@@ -6,15 +6,15 @@ Distributed session used redis, memcached and cookie
 
 <repositories>
     <repository>
-        <id>zkconfter-mvn-github</id>
-        <url>https://raw.githubusercontent.com/lpn520/zkconfter/master/mvn-repository</url>
+        <id>dsessn-mvn-github</id>
+        <url>https://raw.githubusercontent.com/lpn520/dsessn/master/mvn-repository</url>
     </repository>
 </repositories>
 
 <dependencies>
     <dependency>
         <groupId>com.github</groupId>
-        <artifactId>zkconfter</artifactId>
+        <artifactId>dsessn</artifactId>
         <version>1.0.0</version>
     </dependency>
 </dependencies>

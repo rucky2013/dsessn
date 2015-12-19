@@ -6,7 +6,7 @@
 <% Jsplite.inherits("com.github.dsessn.ops.web.Index", request, response); %>
 <html>
 <head>
-  <title>ZkConfter OPS</title>
+  <title>Dsessn OPS</title>
   <%@ include file="WEB-INF/include/meta.jsp" %>
 </head>
 <body>
