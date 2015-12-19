@@ -18,7 +18,7 @@ import java.util.*;
 @SuppressWarnings("deprecation")
 public class MemcachedHttpSessionWrapper implements HttpSession {
 
-    protected final Log logger = LogFactory.getLog(this.getClass());
+    protected final static Log logger = LogFactory.getLog(MemcachedHttpSessionWrapper.class);
     protected MemcachedClient cache;
     protected ServletContext servletContext;
     protected String jsessionid;

@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class OauthTokenBuilder {
 
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final static Log logger = LogFactory.getLog(OauthTokenBuilder.class);
 
     private static final String[] SPLITS = new String[]{"||", "^^", "**", "$$", "++"};
     private static final String[] SPLITS_REG = new String[]{"\\|\\|", "\\^\\^", "\\*\\*", "\\$\\$", "\\+\\+"};

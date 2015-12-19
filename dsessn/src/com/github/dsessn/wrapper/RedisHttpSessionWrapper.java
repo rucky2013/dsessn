@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("deprecation")
 public class RedisHttpSessionWrapper implements HttpSession {
 
-    protected final Log logger = LogFactory.getLog(this.getClass());
+    protected final static Log logger = LogFactory.getLog(RedisHttpSessionWrapper.class);
     protected RedisTemplate<String, Object> cache;
     protected ServletContext servletContext;
     protected String jsessionid;

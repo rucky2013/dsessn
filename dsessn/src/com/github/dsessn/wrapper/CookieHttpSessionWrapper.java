@@ -24,7 +24,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class CookieHttpSessionWrapper implements HttpSession {
 
-    protected final Log logger = LogFactory.getLog(this.getClass());
+    protected final static Log logger = LogFactory.getLog(CookieHttpSessionWrapper.class);
     protected Cookie cookie;
     protected String jsessionid;
     protected ServletContext servletContext;

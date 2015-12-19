@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class DESedeEncryptor {
 
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final static Log logger = LogFactory.getLog(DESedeEncryptor.class);
 
     private static final String DESEDE = "DESede";
     private SecretKeyFactory keyFactory;
