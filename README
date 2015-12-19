@@ -1,2 +1,125 @@
-分布式session，支持使用 redis, memcached 和 cookie
-Distributed session, support the use of redis, memcached and cookie
+分布式session支持使用 redis, memcached 和 cookie
+Distributed session used redis, memcached and cookie
+
+
+在 pom.xml 中加入:
+
+<repositories>
+    <repository>
+        <id>zkconfter-mvn-github</id>
+        <url>https://raw.githubusercontent.com/lpn520/zkconfter/master/mvn-repository</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.github</groupId>
+        <artifactId>zkconfter</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
+
+
+使用Redis:
+
+在 web.xml 中加入:
+
+<filter>
+    <filter-name>sessionClusterFilter</filter-name>
+    <filter-class>
+        com.github.dsessn.filter.RedisSessionClusterFilter
+    </filter-class>
+    <init-param>
+        <param-name>redisTemplate</param-name>
+        <param-value>redisTemplate</param-value>
+    </init-param>
+    <init-param>
+        <param-name>filterSuffix</param-name>
+        <param-value>*.js,*.css,*.png,*.jpg,*.gif,*.ico,*.tff,*.woff,*.svg,*.eot</param-value>
+    </init-param>
+</filter>
+<filter-mapping>
+    <filter-name>sessionClusterFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
+
+在 spring.xml 中加入:
+
+<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+    <property name="connectionFactory">
+        <bean class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+            <property name="hostName" value="${cache.redis.host}"/>
+            <property name="port" value="${cache.redis.port}"/>
+            <property name="poolConfig">
+                <bean class="redis.clients.jedis.JedisPoolConfig">
+                    <property name="maxTotal" value="100"/>
+                    <property name="maxWaitMillis" value="5000"/>
+                    <property name="timeBetweenEvictionRunsMillis" value="300000"/>
+                    <property name="testWhileIdle" value="true"/>
+                </bean>
+            </property>
+        </bean>
+    </property>
+    <property name="keySerializer">
+        <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+    </property>
+    <property name="hashKeySerializer">
+        <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+    </property>
+</bean>
+
+
+使用Memcached:
+
+在 web.xml 中加入:
+
+<filter>
+    <filter-name>sessionClusterFilter</filter-name>
+    <filter-class>
+        com.github.dsessn.filter.MemcachedSessionClusterFilter
+    </filter-class>
+    <init-param>
+        <param-name>memcached</param-name>
+        <param-value>memcached</param-value>
+    </init-param>
+    <init-param>
+        <param-name>filterSuffix</param-name>
+        <param-value>*.js,*.css,*.png,*.jpg,*.gif,*.ico,*.tff,*.woff,*.svg,*.eot</param-value>
+    </init-param>
+</filter>
+<filter-mapping>
+    <filter-name>sessionClusterFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
+
+在 spring.xml 中加入:
+
+<bean id="memcached" class="net.rubyeye.xmemcached.utils.XMemcachedClientFactoryBean"
+      destroy-method="shutdown">
+    <property name="servers">
+        <value>${cache.memcached.servers}</value>
+    </property>
+    <property name="connectionPoolSize" value="5"/>
+    <property name="sessionLocator">
+        <bean class="net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator"/>
+    </property>
+    <property name="transcoder">
+        <bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder"/>
+    </property>
+</bean>
+
+
+使用Cookie:
+
+在 web.xml 中加入:
+
+<filter>
+    <filter-name>sessionClusterFilter</filter-name>
+    <filter-class>
+        com.github.dsessn.filter.CookieSessionClusterFilter
+    </filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>sessionClusterFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
