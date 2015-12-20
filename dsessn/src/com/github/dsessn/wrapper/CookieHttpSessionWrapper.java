@@ -47,7 +47,7 @@ public class CookieHttpSessionWrapper implements HttpSession {
         this.request = request;
         this.response = response;
         this.json = JSON.parseObject(cookie.getValue());
-        logger.info("Redis session cluster filter, SESSION: " + jsessionid);
+        logger.info("Cookie session cluster filter, SESSION: " + jsessionid);
     }
 
 
