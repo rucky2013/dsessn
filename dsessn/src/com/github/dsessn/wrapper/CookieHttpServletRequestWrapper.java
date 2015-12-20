@@ -12,6 +12,7 @@ import javax.servlet.http.*;
  */
 public class CookieHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
+    private final static String REQUEST_SESSION_CLUSTER_FILTER = "REQUEST_SESSION_CLUSTER_FILTER";
     private final static String SESSIONKIE = "SESSIONKIE";
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -36,11 +37,12 @@ public class CookieHttpServletRequestWrapper extends HttpServletRequestWrapper {
      */
     public HttpSession getSession(boolean create) {
         //从当前请求的request中获取分析式session
-        HttpSession session = (HttpSession) this.getAttribute(SESSIONKIE);
+        HttpSession session = (HttpSession) this.getAttribute(REQUEST_SESSION_CLUSTER_FILTER);
 
+        //按cookie中的jsessionid获取分布式session
         if (session == null) {
-            Cookie cookie = null;
             String jsessionid = null;
+            Cookie cookie = null;
 
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
@@ -54,19 +56,23 @@ public class CookieHttpServletRequestWrapper extends HttpServletRequestWrapper {
                 }
             }
 
+            if (jsessionid != null && cookie != null) {
+                session = new CookieHttpSessionWrapper(cookie, jsessionid, this.getServletContext(), request, response);
+            }
+
             //按cookie中的jsessionid获取分布式session
-            if (create) {
-                if (cookie == null) {
+            if (session == null) {
+                if (create) {
                     cookie = new Cookie(SESSIONKIE, new JSONObject().toString());
                     cookie.setPath("/");
                     response.addCookie(cookie);
+                    session = new CookieHttpSessionWrapper(cookie, super.getSession(true).getId(), this.getServletContext(), request, response);
                 }
-                session = new CookieHttpSessionWrapper(cookie, jsessionid, this.getServletContext(), request, response);
             }
 
             //获取到分布式session后，存到request中
             if (session != null) {
-                this.setAttribute(SESSIONKIE, session);
+                this.setAttribute(REQUEST_SESSION_CLUSTER_FILTER, session);
             }
         }
 

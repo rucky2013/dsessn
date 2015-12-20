@@ -39,16 +39,18 @@ public class RedisHttpServletRequestWrapper extends HttpServletRequestWrapper {
         //从当前请求的request中获取分析式session
         HttpSession session = (HttpSession) this.getAttribute(REQUEST_SESSION_CLUSTER_FILTER);
 
+        //按cookie中的jsessionid获取分布式session
         if (session == null) {
-            //按cookie中的jsessionid获取分布式session
             String jsessionid = this.getJsessionId();
             if (jsessionid != null) {
                 session = RedisHttpSessionWrapper.get(cache, jsessionid, this.getServletContext());
             }
 
             //如果获取不到分布式session，则创建
-            if (create) {
-                session = RedisHttpSessionWrapper.create(cache, super.getSession(true));
+            if (session == null) {
+                if (create) {
+                    session = RedisHttpSessionWrapper.create(cache, super.getSession(true));
+                }
             }
 
             //获取到分布式session后，存到request中
