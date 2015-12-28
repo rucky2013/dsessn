@@ -34,8 +34,8 @@ public class MemcachedHttpSessionWrapper implements HttpSession {
      * @param session HttpSession 对象
      * @return 返回 Memcached HttpSession
      */
-    public static HttpSession create(MemcachedClient cache, HttpSession session) {
-        return new MemcachedHttpSessionWrapper(cache, session.getId(), session.getServletContext(),
+    public static HttpSession create(MemcachedClient cache, HttpSession session, String ip) {
+        return new MemcachedHttpSessionWrapper(cache, session.getId(), ip, session.getServletContext(),
                 session.getMaxInactiveInterval(), true);
     }
 
@@ -47,8 +47,8 @@ public class MemcachedHttpSessionWrapper implements HttpSession {
      * @param servletContext ServletContext 对象
      * @return 返回 Memcached HttpSession
      */
-    public static HttpSession get(MemcachedClient cache, String jsessionid, ServletContext servletContext, int interval) {
-        return new MemcachedHttpSessionWrapper(cache, jsessionid, servletContext,
+    public static HttpSession get(MemcachedClient cache, String jsessionid, String ip, ServletContext servletContext, int interval) {
+        return new MemcachedHttpSessionWrapper(cache, jsessionid, ip, servletContext,
                 interval, false);
     }
 
@@ -61,7 +61,7 @@ public class MemcachedHttpSessionWrapper implements HttpSession {
      * @param interval       超时时间, 单位：秒
      * @param isNew          是否是新创建, 新创建的会设置一些值
      */
-    protected MemcachedHttpSessionWrapper(MemcachedClient cache, String jsessionid,
+    protected MemcachedHttpSessionWrapper(MemcachedClient cache, String jsessionid, String ip,
                                           ServletContext servletContext, int interval, boolean isNew) {
         try {
             this.cache = cache;
@@ -70,7 +70,7 @@ public class MemcachedHttpSessionWrapper implements HttpSession {
             this.interval = interval;
             this.isNew = isNew;
             this.SESSION_ID = "SESSION/" + this.getId() + "/";
-            logger.info("Memcached session cluster filter, SESSION: " + jsessionid);
+            logger.info("Memcached session cluster filter, SESSION: " + jsessionid + ", IP: " + ip);
 
         } catch (Exception e) {
             throw new IllegalStateException(e);

@@ -1,9 +1,9 @@
 package com.github.dsessn.wrapper;
 
 
+import com.github.dsessn.utils.SessnUtils;
 import net.rubyeye.xmemcached.MemcachedClient;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
@@ -42,16 +42,18 @@ public class MemcachedHttpServletRequestWrapper extends HttpServletRequestWrappe
 
         //按cookie中的jsessionid获取分布式session
         if (session == null) {
-            String jsessionid = this.getJsessionId();
+            String jsessionid = SessnUtils.getSessionId(super.getCookies());
+            String ip = SessnUtils.getIpAddr((HttpServletRequest) super.getRequest());
+
             if (jsessionid != null) {
-                session = MemcachedHttpSessionWrapper.get(cache, jsessionid, this.getServletContext(),
+                session = MemcachedHttpSessionWrapper.get(cache, jsessionid, ip, this.getServletContext(),
                         super.getSession(true).getMaxInactiveInterval());
             }
 
             //如果获取不到分布式session，则创建
             if (session == null) {
                 if (create) {
-                    session = MemcachedHttpSessionWrapper.create(cache, super.getSession(true));
+                    session = MemcachedHttpSessionWrapper.create(cache, super.getSession(true), ip);
                 }
             }
 
@@ -62,25 +64,6 @@ public class MemcachedHttpServletRequestWrapper extends HttpServletRequestWrappe
         }
 
         return session;
-    }
-
-    /**
-     * 从Cookie或url中获取JSESSIONID
-     *
-     * @return 返回 JSESSIONID
-     */
-    private String getJsessionId() {
-        String jsessionid = null;
-        Cookie[] cookies = super.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("JSESSIONID")) {
-                    jsessionid = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        return jsessionid;
     }
 
 }

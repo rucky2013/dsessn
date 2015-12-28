@@ -1,8 +1,8 @@
 package com.github.dsessn.wrapper;
 
+import com.github.dsessn.utils.SessnUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
@@ -41,15 +41,17 @@ public class RedisHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
         //按cookie中的jsessionid获取分布式session
         if (session == null) {
-            String jsessionid = this.getJsessionId();
+            String jsessionid = SessnUtils.getSessionId(super.getCookies());
+            String ip = SessnUtils.getIpAddr((HttpServletRequest) super.getRequest());
+
             if (jsessionid != null) {
-                session = RedisHttpSessionWrapper.get(cache, jsessionid, this.getServletContext());
+                session = RedisHttpSessionWrapper.get(cache, jsessionid, ip, this.getServletContext());
             }
 
             //如果获取不到分布式session，则创建
             if (session == null) {
                 if (create) {
-                    session = RedisHttpSessionWrapper.create(cache, super.getSession(true));
+                    session = RedisHttpSessionWrapper.create(cache, super.getSession(true), ip);
                 }
             }
 
@@ -60,25 +62,6 @@ public class RedisHttpServletRequestWrapper extends HttpServletRequestWrapper {
         }
 
         return session;
-    }
-
-    /**
-     * 从Cookie或url中获取JSESSIONID
-     *
-     * @return 返回 JSESSIONID
-     */
-    private String getJsessionId() {
-        String jsessionid = null;
-        Cookie[] cookies = super.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("JSESSIONID")) {
-                    jsessionid = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        return jsessionid;
     }
 
 }

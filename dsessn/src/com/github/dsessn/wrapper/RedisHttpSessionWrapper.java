@@ -40,9 +40,9 @@ public class RedisHttpSessionWrapper implements HttpSession {
      * @param session HttpSession 对象
      * @return 返回 Redis HttpSession
      */
-    public static HttpSession create(RedisTemplate<String, Object> cache, HttpSession session) {
+    public static HttpSession create(RedisTemplate<String, Object> cache, HttpSession session, String ip) {
         if (session != null) {
-            return new RedisHttpSessionWrapper(cache, session.getId(), session.getServletContext(),
+            return new RedisHttpSessionWrapper(cache, session.getId(), ip, session.getServletContext(),
                     session.getMaxInactiveInterval(), true);
         } else {
             return null;
@@ -57,8 +57,8 @@ public class RedisHttpSessionWrapper implements HttpSession {
      * @param servletContext ServletContext 对象
      * @return 返回 Redis HttpSession
      */
-    public static HttpSession get(RedisTemplate<String, Object> cache, String jsessionid, ServletContext servletContext) {
-        RedisHttpSessionWrapper httpSession = new RedisHttpSessionWrapper(cache, jsessionid, servletContext,
+    public static HttpSession get(RedisTemplate<String, Object> cache, String jsessionid, String ip, ServletContext servletContext) {
+        RedisHttpSessionWrapper httpSession = new RedisHttpSessionWrapper(cache, jsessionid, ip, servletContext,
                 0, false);
         if (httpSession.cache.hasKey(httpSession.SESSION_ID)) {
             return httpSession;
@@ -76,7 +76,7 @@ public class RedisHttpSessionWrapper implements HttpSession {
      * @param interval       超时时间, 单位：秒
      * @param isNew          是否是新创建, 新创建的会设置一些值
      */
-    protected RedisHttpSessionWrapper(RedisTemplate<String, Object> cache, String jsessionid,
+    protected RedisHttpSessionWrapper(RedisTemplate<String, Object> cache, String jsessionid, String ip,
                                       ServletContext servletContext, int interval, boolean isNew) {
         try {
             this.cache = cache;
@@ -103,7 +103,7 @@ public class RedisHttpSessionWrapper implements HttpSession {
 
             // 刷新Session的生命周期
             redisHashOps.expire(this.getMaxInactiveInterval(), TimeUnit.SECONDS);
-            logger.info("Redis session cluster filter, SESSION: " + jsessionid);
+            logger.info("Redis session cluster filter, SESSION: " + jsessionid + ", IP: " + ip);
 
         } catch (Exception e) {
             throw new IllegalStateException(e);
