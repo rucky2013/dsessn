@@ -46,7 +46,7 @@
     <build>
         <finalName>dsessn</finalName>
         <sourceDirectory>src</sourceDirectory>
-        <outputDirectory>Webapp/WEB-INF/classes</outputDirectory>
+        <outputDirectory>web/WEB-INF/classes</outputDirectory>
         <resources>
             <resource>
                 <directory>src</directory>
