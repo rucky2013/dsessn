@@ -1,4 +1,4 @@
-package com.github.dsessn.security.oauth;
+package com.github.dsessn.oauth;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
