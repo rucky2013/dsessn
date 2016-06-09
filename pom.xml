@@ -10,6 +10,7 @@
     <name>dsessn</name>
     <modules>
         <module>dsessn</module>
+        <module>dsessn-jetty</module>
         <module>dsessn-tomcat</module>
     </modules>
 
