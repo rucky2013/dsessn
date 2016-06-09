@@ -107,19 +107,3 @@ Distributed session used redis or memcached
         <bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder"/>
     </property>
 </bean>
-
-
-使用Cookie:
-
-在 web.xml 中加入:
-
-<filter>
-    <filter-name>sessionClusterFilter</filter-name>
-    <filter-class>
-        com.github.dsessn.filter.CookieSessionClusterFilter
-    </filter-class>
-</filter>
-<filter-mapping>
-    <filter-name>sessionClusterFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-</filter-mapping>
