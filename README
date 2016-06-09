@@ -1,5 +1,5 @@
-分布式session支持使用 redis, memcached 和 cookie
-Distributed session used redis, memcached and cookie
+分布式session支持使用 redis or memcached
+Distributed session used redis or memcached
 
 
 在 pom.xml 中加入:

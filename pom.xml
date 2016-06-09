@@ -9,7 +9,7 @@
     <name>dsessn</name>
     <modules>
         <module>dsessn</module>
-        <module>dsessn-tomcat</module>
+        <!--<module>dsessn-tomcat</module>-->
     </modules>
     
 </project>
